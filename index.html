@@ -121,9 +121,9 @@
                 <img src="assets/INGRESSO ESGOTADO KKKK.png" alt="Ingresso Esgotado" class="w-full rounded-xl shadow-[0_0_30px_rgba(255,69,0,0.3)]">
             </div>
 
-            <!-- O botão fujão -->
+            <!-- O botão fujão (Ajustado para mobile) -->
             <div class="h-32 w-full relative flex justify-center items-center overflow-visible" id="button-container">
-                <button id="fugitive-btn" class="bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg border-2 border-green-400 absolute">
+                <button id="fugitive-btn" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-base md:text-xl shadow-lg border-2 border-green-400 absolute transition-transform duration-200">
                     Comprar Ingresso VIP Agora
                 </button>
             </div>
@@ -224,21 +224,26 @@
         const btn = document.getElementById('fugitive-btn');
         const container = document.getElementById('button-container');
 
-        btn.addEventListener('mouseover', function() {
+        // Função que faz o botão fugir
+        function moveButton(e) {
+            // Se for no celular, previne o comportamento padrão (evita cliques falsos e travamentos)
+            if(e.type === 'touchstart') {
+                e.preventDefault();
+            }
+
             // Pegar as dimensões do container e do botão
-            const containerRect = container.getBoundingClientRect();
             const btnRect = btn.getBoundingClientRect();
             
-            // Calcular limites para o botão não sair da tela
-            // Vamos dar uma margem de fuga aleatória
-            const maxX = (window.innerWidth - btnRect.width) / 2; 
-            const maxY = 150; 
+            // Calcular limites dinâmicos para o botão não sair da tela (com uma margem de segurança)
+            // Usa Math.max para garantir que, mesmo em telas pequenas, ele tente fugir um pouco
+            const maxX = Math.max(20, (window.innerWidth - btnRect.width) / 2 - 20); 
+            const maxY = window.innerWidth < 768 ? 100 : 150; // Foge menos na vertical se for celular
 
-            // Gerar posições aleatórias
-            const randomX = Math.floor(Math.random() * (maxX * 2)) - maxX;
-            const randomY = Math.floor(Math.random() * (maxY * 2)) - maxY;
+            // Gerar posições aleatórias positivas e negativas
+            const randomX = (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * maxX);
+            const randomY = (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * maxY);
 
-            // Aplicar novas posições via transform para ser mais suave e não quebrar layout
+            // Aplicar novas posições via transform
             btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
             
             // Mudar o texto para irritar mais
@@ -250,7 +255,11 @@
                 "Sem Hayley pra você"
             ];
             btn.innerText = frases[Math.floor(Math.random() * frases.length)];
-        });
+        }
+
+        // Adiciona o evento para computador (mouse) E para celular (toque na tela)
+        btn.addEventListener('mouseover', moveButton);
+        btn.addEventListener('touchstart', moveButton, {passive: false});
     </script>
 </body>
 </html>
