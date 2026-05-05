@@ -62,8 +62,10 @@
         .polaroid img {
             width: 100%;
             height: 250px;
-            object-fit: cover;
-            object-position: top center;
+            /* Usando contain para mostrar a imagem 100% sem cortes */
+            object-fit: contain; 
+            /* Fundo cinza claro para preencher o espaço de imagens com formatos diferentes */
+            background-color: #f4f4f5; 
             margin-bottom: 10px;
             filter: grayscale(20%);
         }
